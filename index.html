@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+	<title>Cocktail API</title>
+	<meta charset="utf-8"/>
+	<script>
+
+		function getCocktail() {
+			//making the initial request during the page load. 
+			request = new XMLHttpRequest();
+			console.log("1 - request object created");
+ 			
+ 			//here i'm providing the url for the database JSON file for the AJAX request.
+			request.open("GET", "https://www.thecocktaildb.com/api/json/v1/1/search.php?f=a", true);
+
+			console.log("2 - opened request file");
+			
+			//main function that will pull the data if successful.
+			request.onreadystatechange = function() {
+				console.log("3 - readystatechange event fired.");
+
+ 				
+				if (request.readyState == 4 && request.status == 200) {
+
+					//if successful, this will play out and give back the correct data requested. 
+					result = request.responseText;
+					cocktails = JSON.parse(result);
+			
+					hmtlString = " ";
+					counter = 0;
+
+					for (i = 0; i < cocktails.drinks.length; i++) {
+						counter += 1;
+						hmtlString += "<p>" + cocktails.drinks[i].strDrink  + "<br>" + "Main ingredient: " + cocktails.drinks[i].strIngredient1 +"</p>";
+					}
+					
+					document.getElementById("data").innerHTML ="Available Drinks for letter 'A': " + counter + hmtlString;
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+
+					document.getElementById("data").innerHTML = "Oops, something went wrong.";
+
+				}
+
+				else if (request.readyState == 3) {
+
+					document.getElementById("data").innerHTML = "Just a second!";
+
+				}
+
+			}
+			//sending off the HTTP request here.
+			request.send();
+			console.log("4 - Request sent");
+		}
+
+	</script>
+</head>
+
+
+<body onload="getCocktail()">
+
+	<h1>Our Drinks</h1>
+	<div id="data">Loading...</div>
+	<div> 
+		<p> I chose to source my data from The Cocktail DB, which provides recipes for different cocktails.</p>
+		<p>I found this site through a Github page that compiles a list of public API's. Found <a href = "https://www.thecocktaildb.com/api.php" target ="_blank">here.</a></p>
+		<p>I followed the AJAX template for the API request that we learned in class. It follows the 4 steps of setting up the request to the server, opening the file, firing off the request, and finally parsing through the data to return the info. I want. I chose to display the cocktails available that start with the letter "A", and inlcuded the main ingredient in their recipe.</p>
+		<p>This API may be useful in the development of a site that provides a list of drinks such as a recipe reference. It may also be used to create a site that allows users to enter their available drink ingredients to find any potential recipes for cocktails they can make.</p>
+	</div>
+</html>
